@@ -6,186 +6,103 @@
 <title>経費メモ</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap');
-
   :root {
-    --bg: #0f0f11;
-    --surface: #1a1a1f;
-    --surface2: #242429;
-    --border: #2e2e36;
-    --accent: #7fff6e;
-    --accent2: #4fd1c5;
-    --text: #f0f0f0;
-    --text2: #888899;
-    --danger: #ff6b6b;
-    --radius: 12px;
+    --bg:#0f0f11;--surface:#1a1a1f;--surface2:#242429;--border:#2e2e36;
+    --accent:#7fff6e;--accent2:#4fd1c5;--text:#f0f0f0;--text2:#888899;
+    --danger:#ff6b6b;--radius:12px;
   }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Noto Sans JP', sans-serif;
-    min-height: 100vh;
-    padding-bottom: 32px;
-  }
-
-  .header {
-    position: sticky; top: 0; z-index: 100;
-    background: rgba(15,15,17,0.95);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    padding: 14px 16px 12px;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .header-title { font-size: 17px; font-weight: 700; letter-spacing: 0.02em; }
-  .header-title span { color: var(--accent); }
-  .month-badge {
-    font-family: 'DM Mono', monospace; font-size: 13px;
-    background: var(--surface2); border: 1px solid var(--border);
-    color: var(--accent2); padding: 4px 10px; border-radius: 20px;
-  }
-
-  .tabs {
-    display: flex; background: var(--surface);
-    border-bottom: 1px solid var(--border); padding: 0 8px;
-  }
-  .tab {
-    flex: 1; padding: 12px 4px; text-align: center;
-    font-size: 13px; font-weight: 500; color: var(--text2);
-    cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s;
-  }
-  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-
-  .content { padding: 16px; }
-  .hidden { display: none !important; }
-
-  .form-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 16px; margin-bottom: 16px;
-  }
-  .form-row { margin-bottom: 14px; }
-  .form-label {
-    font-size: 11px; font-weight: 500; color: var(--text2);
-    text-transform: uppercase; letter-spacing: 0.08em;
-    margin-bottom: 6px; display: block;
-  }
-  .form-input, .form-select, .form-textarea {
-    width: 100%; background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 8px; color: var(--text); font-family: 'Noto Sans JP', sans-serif;
-    font-size: 15px; padding: 10px 12px; outline: none; transition: border-color 0.2s;
-    -webkit-appearance: none;
-  }
-  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent2); }
-  .form-select option { background: var(--surface2); }
-  .form-textarea { height: 64px; resize: none; }
-  .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
-
-  .btn-add {
-    width: 100%; background: var(--accent); color: #0f0f11;
-    font-family: 'Noto Sans JP', sans-serif; font-size: 15px; font-weight: 700;
-    padding: 14px; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s;
-  }
-  .btn-add:active { transform: scale(0.98); opacity: 0.85; }
-
-  /* 候補サジェスト */
-  .suggest-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-  .chip {
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 20px; padding: 4px 10px; font-size: 12px; color: var(--text2);
-    cursor: pointer; transition: all 0.15s;
-  }
-  .chip:active { background: var(--accent2); color: #0f0f11; border-color: var(--accent2); }
-
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;min-height:100vh;padding-bottom:32px;}
+  .header{position:sticky;top:0;z-index:100;background:rgba(15,15,17,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:14px 16px 12px;display:flex;align-items:center;justify-content:space-between;}
+  .header-title{font-size:17px;font-weight:700;letter-spacing:.02em;}
+  .header-title span{color:var(--accent);}
+  .header-right{display:flex;align-items:center;gap:8px;}
+  .sync-status{font-size:11px;color:var(--text2);font-family:'DM Mono',monospace;}
+  .sync-status.ok{color:var(--accent);}
+  .sync-status.err{color:var(--danger);}
+  .sync-btn{background:none;border:1px solid var(--border);color:var(--text2);font-size:13px;padding:4px 10px;border-radius:20px;cursor:pointer;font-family:'DM Mono',monospace;transition:all .2s;}
+  .sync-btn:active{border-color:var(--accent2);color:var(--accent2);}
+  .tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);padding:0 8px;}
+  .tab{flex:1;padding:12px 4px;text-align:center;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;}
+  .tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+  .content{padding:16px;}
+  .hidden{display:none!important;}
+  .form-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px;}
+  .form-row{margin-bottom:14px;}
+  .form-label{font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;display:block;}
+  .form-input,.form-select,.form-textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:15px;padding:10px 12px;outline:none;transition:border-color .2s;-webkit-appearance:none;}
+  .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--accent2);}
+  .form-select option{background:var(--surface2);}
+  .form-textarea{height:64px;resize:none;}
+  .form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+  .btn-add{width:100%;background:var(--accent);color:#0f0f11;font-family:'Noto Sans JP',sans-serif;font-size:15px;font-weight:700;padding:14px;border:none;border-radius:8px;cursor:pointer;transition:all .2s;}
+  .btn-add:active{transform:scale(.98);opacity:.85;}
+  .suggest-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+  .chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-size:12px;color:var(--text2);cursor:pointer;transition:all .15s;}
+  .chip:active{background:var(--accent2);color:#0f0f11;border-color:var(--accent2);}
+  /* 設定パネル */
+  .settings-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px;}
+  .settings-title{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;}
+  .settings-desc{font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:12px;}
+  .settings-desc a{color:var(--accent2);}
+  .btn-save{background:var(--surface2);border:1px solid var(--accent2);color:var(--accent2);font-family:'Noto Sans JP',sans-serif;font-size:14px;font-weight:700;padding:11px;border-radius:8px;cursor:pointer;width:100%;margin-top:4px;transition:all .2s;}
+  .btn-save:active{background:var(--accent2);color:#0f0f11;}
+  .gist-id-hint{font-size:11px;color:var(--text2);margin-top:6px;font-family:'DM Mono',monospace;}
   /* 一覧 */
-  .month-filter {
-    display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px;
-    margin-bottom: 14px; scrollbar-width: none;
-  }
-  .month-filter::-webkit-scrollbar { display: none; }
-  .mf-btn {
-    flex-shrink: 0; padding: 6px 12px; border-radius: 20px;
-    font-size: 12px; font-family: 'DM Mono', monospace;
-    background: var(--surface2); border: 1px solid var(--border);
-    color: var(--text2); cursor: pointer; transition: all 0.15s;
-  }
-  .mf-btn.active { background: var(--accent2); border-color: var(--accent2); color: #0f0f11; font-weight: 700; }
-
-  .list-empty { text-align: center; color: var(--text2); font-size: 14px; padding: 48px 16px; }
-  .list-empty .empty-icon { font-size: 40px; margin-bottom: 8px; }
-
-  .entry-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 12px 14px; margin-bottom: 10px;
-    display: flex; align-items: flex-start; gap: 12px;
-    animation: slideIn 0.2s ease;
-  }
-  @keyframes slideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-  .entry-source-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
-  .dot-receipt { background: var(--accent); }
-  .dot-pdf { background: var(--accent2); }
-  .dot-manual { background: #f6ad55; }
-  .entry-body { flex: 1; min-width: 0; }
-  .entry-top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 2px; }
-  .entry-summary { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .entry-amount { font-family: 'DM Mono', monospace; font-size: 15px; font-weight: 500; color: var(--accent); flex-shrink: 0; }
-  .entry-meta { display: flex; gap: 8px; font-size: 11px; color: var(--text2); flex-wrap: wrap; }
-  .entry-cat {
-    background: var(--surface2); border-radius: 4px; padding: 1px 6px;
-    font-size: 11px; color: var(--accent2); border: 1px solid var(--border);
-  }
-  .entry-delete { background: none; border: none; color: var(--text2); font-size: 18px; cursor: pointer; padding: 0 0 0 4px; line-height: 1; flex-shrink: 0; }
-  .entry-delete:active { color: var(--danger); }
-
-  /* 出力タブ */
-  .export-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 16px; margin-bottom: 14px;
-  }
-  .export-title { font-size: 13px; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
-  .export-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
-  .stat-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
-  .stat-label { font-size: 11px; color: var(--text2); margin-bottom: 2px; }
-  .stat-value { font-family: 'DM Mono', monospace; font-size: 18px; font-weight: 500; color: var(--accent); }
-  .month-summary-list { margin-bottom: 14px; }
-  .month-summary-row {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px;
-  }
-  .month-summary-row:last-child { border-bottom: none; }
-  .month-summary-label { font-family: 'DM Mono', monospace; color: var(--accent2); }
-  .month-summary-val { font-family: 'DM Mono', monospace; color: var(--accent); }
-  .btn-export {
-    width: 100%; background: var(--surface2); border: 1px solid var(--accent2);
-    color: var(--accent2); font-family: 'Noto Sans JP', sans-serif; font-size: 14px;
-    font-weight: 700; padding: 12px; border-radius: 8px; cursor: pointer;
-    transition: all 0.2s; margin-bottom: 8px; display: block;
-  }
-  .btn-export:active { background: var(--accent2); color: #0f0f11; }
-  .btn-export.secondary { border-color: var(--text2); color: var(--text2); }
-
-  .toast {
-    position: fixed; bottom: 32px; left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: var(--surface2); border: 1px solid var(--accent);
-    color: var(--accent); font-size: 13px; padding: 10px 20px;
-    border-radius: 24px; opacity: 0; transition: all 0.3s; z-index: 999;
-    white-space: nowrap; pointer-events: none;
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .month-filter{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;scrollbar-width:none;}
+  .month-filter::-webkit-scrollbar{display:none;}
+  .mf-btn{flex-shrink:0;padding:6px 12px;border-radius:20px;font-size:12px;font-family:'DM Mono',monospace;background:var(--surface2);border:1px solid var(--border);color:var(--text2);cursor:pointer;transition:all .15s;}
+  .mf-btn.active{background:var(--accent2);border-color:var(--accent2);color:#0f0f11;font-weight:700;}
+  .list-empty{text-align:center;color:var(--text2);font-size:14px;padding:48px 16px;}
+  .entry-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px;animation:slideIn .2s ease;}
+  @keyframes slideIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+  .entry-source-dot{width:8px;height:8px;border-radius:50%;margin-top:6px;flex-shrink:0;}
+  .dot-receipt{background:var(--accent);}
+  .dot-pdf{background:var(--accent2);}
+  .dot-manual{background:#f6ad55;}
+  .entry-body{flex:1;min-width:0;}
+  .entry-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:2px;}
+  .entry-summary{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .entry-amount{font-family:'DM Mono',monospace;font-size:15px;font-weight:500;color:var(--accent);flex-shrink:0;}
+  .entry-meta{display:flex;gap:8px;font-size:11px;color:var(--text2);flex-wrap:wrap;}
+  .entry-cat{background:var(--surface2);border-radius:4px;padding:1px 6px;font-size:11px;color:var(--accent2);border:1px solid var(--border);}
+  .entry-delete{background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer;padding:0 0 0 4px;line-height:1;flex-shrink:0;}
+  .entry-delete:active{color:var(--danger);}
+  /* 出力 */
+  .export-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px;}
+  .export-title{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;}
+  .export-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+  .stat-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;}
+  .stat-label{font-size:11px;color:var(--text2);margin-bottom:2px;}
+  .stat-value{font-family:'DM Mono',monospace;font-size:18px;font-weight:500;color:var(--accent);}
+  .month-summary-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
+  .month-summary-row:last-child{border-bottom:none;}
+  .month-summary-label{font-family:'DM Mono',monospace;color:var(--accent2);}
+  .month-summary-val{font-family:'DM Mono',monospace;color:var(--accent);}
+  .btn-export{width:100%;background:var(--surface2);border:1px solid var(--accent2);color:var(--accent2);font-family:'Noto Sans JP',sans-serif;font-size:14px;font-weight:700;padding:12px;border-radius:8px;cursor:pointer;transition:all .2s;margin-bottom:8px;display:block;}
+  .btn-export:active{background:var(--accent2);color:#0f0f11;}
+  .btn-export.secondary{border-color:var(--text2);color:var(--text2);}
+  .toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface2);border:1px solid var(--accent);color:var(--accent);font-size:13px;padding:10px 20px;border-radius:24px;opacity:0;transition:all .3s;z-index:999;white-space:nowrap;pointer-events:none;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .spin{animation:spin 1s linear infinite;display:inline-block;}
+  @keyframes spin{to{transform:rotate(360deg);}}
 </style>
 </head>
 <body>
 
 <div class="header">
   <div class="header-title">経費<span>メモ</span></div>
-  <div class="month-badge" id="currentMonthBadge">----/--</div>
+  <div class="header-right">
+    <span class="sync-status" id="syncStatus">未設定</span>
+    <button class="sync-btn" onclick="syncNow()" id="syncBtn">同期</button>
+  </div>
 </div>
 
 <div class="tabs">
   <div class="tab active" onclick="switchTab('input')">＋ 入力</div>
   <div class="tab" onclick="switchTab('list')">一覧</div>
   <div class="tab" onclick="switchTab('export')">出力</div>
+  <div class="tab" onclick="switchTab('settings')">設定</div>
 </div>
 
 <!-- 入力タブ -->
@@ -201,29 +118,20 @@
         <input class="form-input" type="number" id="inputAmount" placeholder="0" inputmode="numeric" />
       </div>
     </div>
-
     <div class="form-row">
       <label class="form-label">摘要（店名・内容）</label>
       <input class="form-input" type="text" id="inputSummary" placeholder="例：コンビニ、タトゥー用品" oninput="updateSuggest()" />
       <div class="suggest-chips" id="suggestChips"></div>
     </div>
-
     <div class="form-row-2">
       <div>
         <label class="form-label">勘定科目</label>
         <select class="form-select" id="inputCategory">
           <option value="">未分類</option>
-          <option>消耗品費</option>
-          <option>通信費</option>
-          <option>交通費</option>
-          <option>外注費</option>
-          <option>広告宣伝費</option>
-          <option>会議費</option>
-          <option>接待交際費</option>
-          <option>光熱費</option>
-          <option>設備費</option>
-          <option>福利厚生費</option>
-          <option>その他</option>
+          <option>消耗品費</option><option>通信費</option><option>交通費</option>
+          <option>外注費</option><option>広告宣伝費</option><option>会議費</option>
+          <option>接待交際費</option><option>光熱費</option><option>設備費</option>
+          <option>福利厚生費</option><option>その他</option>
         </select>
       </div>
       <div>
@@ -235,12 +143,10 @@
         </select>
       </div>
     </div>
-
     <div class="form-row">
       <label class="form-label">備考</label>
       <textarea class="form-textarea" id="inputNote" placeholder="任意メモ"></textarea>
     </div>
-
     <button class="btn-add" onclick="addEntry()">追加する</button>
   </div>
 </div>
@@ -256,10 +162,10 @@
   <div class="export-card">
     <div class="export-title">サマリー</div>
     <div class="export-stats" id="exportStats"></div>
-    <div class="month-summary-list" id="monthSummaryList"></div>
+    <div id="monthSummaryList"></div>
   </div>
   <div class="export-card">
-    <div class="export-title">CSVエクスポート</div>
+    <div class="export-title">CSV エクスポート</div>
     <div class="form-row">
       <label class="form-label">対象月</label>
       <select class="form-select" id="exportMonthSelect"></select>
@@ -269,22 +175,88 @@
   </div>
 </div>
 
+<!-- 設定タブ -->
+<div class="content hidden" id="tab-settings">
+  <div class="settings-card">
+    <div class="settings-title">GitHub Gist 連携</div>
+    <div class="settings-desc">
+      データをGistに保存することでスマホ・PCどちらからでも同じデータにアクセスできます。<br><br>
+      <strong style="color:var(--text)">① Personal Access Token の取得</strong><br>
+      <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a> を開き、
+      「Gist」にチェックを入れてトークンを生成してください。
+    </div>
+    <div class="form-row">
+      <label class="form-label">Personal Access Token</label>
+      <input class="form-input" type="password" id="settingsToken" placeholder="ghp_xxxxxxxxxxxx" />
+    </div>
+    <div class="form-row">
+      <label class="form-label">Gist ID（初回は空欄でOK）</label>
+      <input class="form-input" type="text" id="settingsGistId" placeholder="自動作成されます" />
+      <div class="gist-id-hint" id="gistIdHint"></div>
+    </div>
+    <button class="btn-save" onclick="saveSettings()">保存して接続テスト</button>
+  </div>
+  <div class="settings-card">
+    <div class="settings-title">データ管理</div>
+    <button class="btn-export secondary" onclick="clearLocalData()" style="margin-bottom:0">ローカルデータを消去</button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-const STORAGE_KEY = 'expense_v2';
+// ─── ストレージキー ───────────────────────────────────────
+const LS_ENTRIES = 'expense_v2';
+const LS_TOKEN   = 'expense_gh_token';
+const LS_GIST_ID = 'expense_gist_id';
+const GIST_FILENAME = 'expense_data.json';
 
-function load() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; } }
-function save(e) { localStorage.setItem(STORAGE_KEY, JSON.stringify(e)); }
+function loadEntries() { try { return JSON.parse(localStorage.getItem(LS_ENTRIES)||'[]'); } catch { return []; } }
+function saveEntries(e) { localStorage.setItem(LS_ENTRIES, JSON.stringify(e)); }
+function getToken()  { return localStorage.getItem(LS_TOKEN)||''; }
+function getGistId() { return localStorage.getItem(LS_GIST_ID)||''; }
 
-// よく使う摘要サジェスト（過去履歴から生成）
+// ─── 初期化 ──────────────────────────────────────────────
+let selectedListMonth = 'all';
+
+window.onload = async () => {
+  const today = new Date();
+  document.getElementById('inputDate').value = today.toISOString().slice(0,10);
+
+  const token  = getToken();
+  const gistId = getGistId();
+  if (token) document.getElementById('settingsToken').value = token;
+  if (gistId) {
+    document.getElementById('settingsGistId').value = gistId;
+    document.getElementById('gistIdHint').textContent = `https://gist.github.com/${gistId}`;
+  }
+  updateSyncStatus(token && gistId ? 'ready' : 'unset');
+
+  // 起動時にGistから最新データを取得
+  if (token && gistId) {
+    await pullFromGist(true);
+  }
+};
+
+// ─── タブ ────────────────────────────────────────────────
+function switchTab(name) {
+  ['input','list','export','settings'].forEach(t => {
+    document.getElementById(`tab-${t}`).classList.toggle('hidden', t !== name);
+  });
+  document.querySelectorAll('.tab').forEach((el,i) => {
+    el.classList.toggle('active', ['input','list','export','settings'][i] === name);
+  });
+  if (name === 'list') renderList();
+  if (name === 'export') renderExport();
+}
+
+// ─── サジェスト ──────────────────────────────────────────
 function updateSuggest() {
   const val = document.getElementById('inputSummary').value.trim();
-  const entries = load();
-  const all = [...new Set(entries.map(e => e.summary))];
+  const all = [...new Set(loadEntries().map(e => e.summary))];
   const chips = document.getElementById('suggestChips');
-  if (!val) { chips.innerHTML = ''; return; }
-  const matches = all.filter(s => s.includes(val) && s !== val).slice(0, 5);
+  if (!val) { chips.innerHTML=''; return; }
+  const matches = all.filter(s => s.includes(val) && s !== val).slice(0,5);
   chips.innerHTML = matches.map(s =>
     `<div class="chip" onclick="fillSummary('${s.replace(/'/g,"\\'")}')">↩ ${s}</div>`
   ).join('');
@@ -292,79 +264,57 @@ function updateSuggest() {
 function fillSummary(s) {
   document.getElementById('inputSummary').value = s;
   document.getElementById('suggestChips').innerHTML = '';
-  // 過去の同じ摘要から勘定科目を自動セット
-  const entries = load();
-  const prev = entries.filter(e => e.summary === s).pop();
-  if (prev && prev.category) document.getElementById('inputCategory').value = prev.category;
+  const prev = loadEntries().filter(e => e.summary === s).pop();
+  if (prev?.category) document.getElementById('inputCategory').value = prev.category;
 }
 
-window.onload = () => {
-  const today = new Date();
-  document.getElementById('inputDate').value = today.toISOString().slice(0,10);
-  document.getElementById('currentMonthBadge').textContent =
-    `${today.getFullYear()}/${String(today.getMonth()+1).padStart(2,'0')}`;
-};
-
-let selectedListMonth = 'all';
-
-function switchTab(name) {
-  ['input','list','export'].forEach(t => {
-    document.getElementById(`tab-${t}`).classList.toggle('hidden', t !== name);
-  });
-  document.querySelectorAll('.tab').forEach((el, i) => {
-    el.classList.toggle('active', ['input','list','export'][i] === name);
-  });
-  if (name === 'list') renderList();
-  if (name === 'export') renderExport();
-}
-
-function addEntry() {
-  const date = document.getElementById('inputDate').value;
-  const amount = document.getElementById('inputAmount').value;
+// ─── エントリ追加 ────────────────────────────────────────
+async function addEntry() {
+  const date    = document.getElementById('inputDate').value;
+  const amount  = document.getElementById('inputAmount').value;
   const summary = document.getElementById('inputSummary').value.trim();
-  if (!date || !amount || !summary) { showToast('日付・金額・摘要は必須です'); return; }
+  if (!date||!amount||!summary) { showToast('日付・金額・摘要は必須です'); return; }
 
-  const entries = load();
+  const entries = loadEntries();
   entries.push({
-    id: Date.now(), date,
-    amount: parseInt(amount),
-    summary,
-    category: document.getElementById('inputCategory').value || '未分類',
-    source: document.getElementById('inputSource').value,
-    note: document.getElementById('inputNote').value.trim(),
-    month: date.slice(0,7)
+    id: Date.now(), date, amount: parseInt(amount), summary,
+    category: document.getElementById('inputCategory').value||'未分類',
+    source:   document.getElementById('inputSource').value,
+    note:     document.getElementById('inputNote').value.trim(),
+    month:    date.slice(0,7)
   });
-  save(entries);
+  saveEntries(entries);
 
-  document.getElementById('inputAmount').value = '';
+  document.getElementById('inputAmount').value  = '';
   document.getElementById('inputSummary').value = '';
-  document.getElementById('inputNote').value = '';
+  document.getElementById('inputNote').value    = '';
   document.getElementById('suggestChips').innerHTML = '';
+
   showToast('✓ 追加しました');
+  await pushToGist();
 }
 
+// ─── 一覧 ────────────────────────────────────────────────
 function renderList() {
-  const entries = load();
-  const months = [...new Set(entries.map(e => e.month))].sort().reverse();
+  const entries = loadEntries();
+  const months  = [...new Set(entries.map(e => e.month))].sort().reverse();
   const mf = document.getElementById('monthFilter');
   mf.innerHTML = `<div class="mf-btn ${selectedListMonth==='all'?'active':''}" onclick="filterMonth('all')">全て</div>`;
   months.forEach(m => {
     mf.innerHTML += `<div class="mf-btn ${selectedListMonth===m?'active':''}" onclick="filterMonth('${m}')">${m}</div>`;
   });
-
-  const filtered = (selectedListMonth === 'all' ? entries : entries.filter(e => e.month === selectedListMonth))
+  const filtered = (selectedListMonth==='all' ? entries : entries.filter(e=>e.month===selectedListMonth))
     .sort((a,b) => b.date.localeCompare(a.date));
-
   const lc = document.getElementById('listContent');
   if (!filtered.length) {
-    lc.innerHTML = `<div class="list-empty"><div class="empty-icon">📋</div>データがありません</div>`;
+    lc.innerHTML = `<div class="list-empty"><div style="font-size:40px;margin-bottom:8px">📋</div>データがありません</div>`;
     return;
   }
-  const srcLabel = { receipt:'レシート', pdf:'PDF', manual:'手入力' };
-  const dotCls = { receipt:'dot-receipt', pdf:'dot-pdf', manual:'dot-manual' };
+  const sl = {receipt:'レシート',pdf:'PDF',manual:'手入力'};
+  const dc = {receipt:'dot-receipt',pdf:'dot-pdf',manual:'dot-manual'};
   lc.innerHTML = filtered.map(e => `
     <div class="entry-card">
-      <div class="entry-source-dot ${dotCls[e.source]||'dot-manual'}"></div>
+      <div class="entry-source-dot ${dc[e.source]||'dot-manual'}"></div>
       <div class="entry-body">
         <div class="entry-top">
           <div class="entry-summary">${e.summary}</div>
@@ -373,76 +323,186 @@ function renderList() {
         <div class="entry-meta">
           <span>${e.date}</span>
           <span class="entry-cat">${e.category}</span>
-          <span>${srcLabel[e.source]||e.source}</span>
+          <span>${sl[e.source]||e.source}</span>
           ${e.note?`<span>${e.note}</span>`:''}
         </div>
       </div>
       <button class="entry-delete" onclick="deleteEntry(${e.id})">×</button>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
-
-function filterMonth(m) { selectedListMonth = m; renderList(); }
-
-function deleteEntry(id) {
-  save(load().filter(e => e.id !== id));
+function filterMonth(m) { selectedListMonth=m; renderList(); }
+async function deleteEntry(id) {
+  saveEntries(loadEntries().filter(e=>e.id!==id));
   renderList();
   showToast('削除しました');
+  await pushToGist();
 }
 
+// ─── 出力 ────────────────────────────────────────────────
 function renderExport() {
-  const entries = load();
-  const months = [...new Set(entries.map(e => e.month))].sort().reverse();
-  const total = entries.reduce((s,e) => s+e.amount, 0);
-
+  const entries = loadEntries();
+  const months  = [...new Set(entries.map(e=>e.month))].sort().reverse();
+  const total   = entries.reduce((s,e)=>s+e.amount,0);
   document.getElementById('exportStats').innerHTML = `
     <div class="stat-box"><div class="stat-label">総件数</div><div class="stat-value">${entries.length}件</div></div>
-    <div class="stat-box"><div class="stat-label">合計金額</div><div class="stat-value">¥${total.toLocaleString()}</div></div>
-  `;
-
+    <div class="stat-box"><div class="stat-label">合計金額</div><div class="stat-value">¥${total.toLocaleString()}</div></div>`;
   document.getElementById('monthSummaryList').innerHTML = months.map(m => {
-    const me = entries.filter(e => e.month === m);
-    const amt = me.reduce((s,e) => s+e.amount, 0);
+    const me = entries.filter(e=>e.month===m);
     return `<div class="month-summary-row">
       <span class="month-summary-label">${m}</span>
       <span style="color:var(--text2);font-size:12px">${me.length}件</span>
-      <span class="month-summary-val">¥${amt.toLocaleString()}</span>
+      <span class="month-summary-val">¥${me.reduce((s,e)=>s+e.amount,0).toLocaleString()}</span>
     </div>`;
   }).join('');
-
   const sel = document.getElementById('exportMonthSelect');
   sel.innerHTML = months.map(m =>
     `<option value="${m}">${m}（${entries.filter(e=>e.month===m).length}件）</option>`
   ).join('');
 }
-
 function exportCSV() {
   const m = document.getElementById('exportMonthSelect').value;
   if (!m) { showToast('データがありません'); return; }
-  const entries = load().filter(e => e.month === m).sort((a,b) => a.date.localeCompare(b.date));
-  downloadCSV(entries, `${m}_manual.csv`);
+  dlCSV(loadEntries().filter(e=>e.month===m).sort((a,b)=>a.date.localeCompare(b.date)), `${m}_manual.csv`);
 }
 function exportAllCSV() {
-  const entries = load().sort((a,b) => a.date.localeCompare(b.date));
-  if (!entries.length) { showToast('データがありません'); return; }
-  downloadCSV(entries, 'all_manual.csv');
+  const e = loadEntries().sort((a,b)=>a.date.localeCompare(b.date));
+  if (!e.length) { showToast('データがありません'); return; }
+  dlCSV(e,'all_manual.csv');
 }
-function downloadCSV(entries, filename) {
-  const srcLabel = { receipt:'レシート', pdf:'PDF', manual:'手入力' };
-  const header = '日付,摘要,金額,勘定科目,ソース,備考';
-  const rows = entries.map(e =>
-    [e.date, `"${e.summary}"`, e.amount, `"${e.category}"`, srcLabel[e.source]||e.source, `"${e.note||''}"`].join(',')
-  );
-  const blob = new Blob(['\uFEFF' + [header,...rows].join('\n')], { type: 'text/csv;charset=utf-8' });
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = filename; a.click();
+function dlCSV(entries,filename) {
+  const sl = {receipt:'レシート',pdf:'PDF',manual:'手入力'};
+  const rows = entries.map(e=>[e.date,`"${e.summary}"`,e.amount,`"${e.category}"`,sl[e.source]||e.source,`"${e.note||''}"`].join(','));
+  const blob = new Blob(['\uFEFF'+['日付,摘要,金額,勘定科目,ソース,備考',...rows].join('\n')],{type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; a.click();
   showToast(`📥 ${filename} をダウンロード`);
 }
 
+// ─── 設定 ────────────────────────────────────────────────
+async function saveSettings() {
+  const token  = document.getElementById('settingsToken').value.trim();
+  const gistId = document.getElementById('settingsGistId').value.trim();
+  if (!token) { showToast('トークンを入力してください'); return; }
+  localStorage.setItem(LS_TOKEN, token);
+  if (gistId) localStorage.setItem(LS_GIST_ID, gistId);
+
+  showToast('接続テスト中...');
+  updateSyncStatus('syncing');
+
+  if (!gistId) {
+    // 新規Gist作成
+    const ok = await createGist(token);
+    if (ok) showToast('✓ Gistを作成しました！');
+  } else {
+    // 既存Gistに接続
+    const ok = await pullFromGist(false);
+    if (ok) showToast('✓ 接続成功！');
+  }
+}
+
+async function createGist(token) {
+  try {
+    const res = await fetch('https://api.github.com/gists', {
+      method: 'POST',
+      headers: { Authorization:`token ${token}`, 'Content-Type':'application/json' },
+      body: JSON.stringify({
+        description: '経費メモ データ',
+        public: false,
+        files: { [GIST_FILENAME]: { content: JSON.stringify([]) } }
+      })
+    });
+    if (!res.ok) throw new Error(res.status);
+    const data = await res.json();
+    localStorage.setItem(LS_GIST_ID, data.id);
+    document.getElementById('settingsGistId').value = data.id;
+    document.getElementById('gistIdHint').textContent = `https://gist.github.com/${data.id}`;
+    updateSyncStatus('ready');
+    return true;
+  } catch(e) {
+    updateSyncStatus('err');
+    showToast('Gist作成失敗：トークンを確認してください');
+    return false;
+  }
+}
+
+// ─── Gist同期 ────────────────────────────────────────────
+async function pushToGist() {
+  const token  = getToken();
+  const gistId = getGistId();
+  if (!token||!gistId) return;
+  updateSyncStatus('syncing');
+  try {
+    const res = await fetch(`https://api.github.com/gists/${gistId}`, {
+      method: 'PATCH',
+      headers: { Authorization:`token ${token}`, 'Content-Type':'application/json' },
+      body: JSON.stringify({ files:{ [GIST_FILENAME]:{ content: JSON.stringify(loadEntries()) } } })
+    });
+    if (!res.ok) throw new Error(res.status);
+    updateSyncStatus('ok');
+  } catch {
+    updateSyncStatus('err');
+  }
+}
+
+async function pullFromGist(silent=false) {
+  const token  = getToken();
+  const gistId = getGistId();
+  if (!token||!gistId) return false;
+  if (!silent) updateSyncStatus('syncing');
+  try {
+    const res = await fetch(`https://api.github.com/gists/${gistId}`, {
+      headers: { Authorization:`token ${token}` }
+    });
+    if (!res.ok) throw new Error(res.status);
+    const data = await res.json();
+    const content = data.files?.[GIST_FILENAME]?.content;
+    if (content) {
+      const remote = JSON.parse(content);
+      // マージ：ローカルとリモートをidでマージ（重複排除）
+      const local = loadEntries();
+      const merged = [...remote];
+      local.forEach(le => { if (!merged.find(re=>re.id===le.id)) merged.push(le); });
+      saveEntries(merged);
+    }
+    updateSyncStatus('ok');
+    if (!silent) showToast('✓ 同期しました');
+    return true;
+  } catch {
+    updateSyncStatus('err');
+    if (!silent) showToast('同期失敗：設定を確認してください');
+    return false;
+  }
+}
+
+async function syncNow() {
+  const token  = getToken();
+  const gistId = getGistId();
+  if (!token||!gistId) { switchTab('settings'); showToast('まず設定してください'); return; }
+  await pullFromGist(false);
+  renderList();
+  renderExport();
+}
+
+function updateSyncStatus(state) {
+  const el = document.getElementById('syncStatus');
+  el.className = 'sync-status';
+  if (state==='ok')      { el.textContent='✓ 同期済'; el.classList.add('ok'); }
+  else if (state==='err'){ el.textContent='✗ エラー'; el.classList.add('err'); }
+  else if (state==='syncing'){ el.textContent='⟳ 同期中'; }
+  else if (state==='unset')  { el.textContent='未設定'; }
+  else if (state==='ready')  { el.textContent='● 接続済'; el.classList.add('ok'); }
+}
+
+function clearLocalData() {
+  if (!confirm('ローカルのデータを消去しますか？\n（Gist上のデータは残ります）')) return;
+  localStorage.removeItem(LS_ENTRIES);
+  showToast('ローカルデータを消去しました');
+}
+
+// ─── トースト ────────────────────────────────────────────
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
 }
 </script>
 </body>
