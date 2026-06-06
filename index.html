@@ -425,21 +425,25 @@ async function createGist(token) {
 }
 
 // ─── Gist同期 ────────────────────────────────────────────
+async function pushToGistRaw(token, gistId, entries) {
+  const res = await fetch(`https://api.github.com/gists/${gistId}`, {
+    method: "PATCH",
+    headers: { Authorization:`token ${token}`, "Content-Type":"application/json" },
+    body: JSON.stringify({ files:{ [GIST_FILENAME]:{ content: JSON.stringify(entries) } } })
+  });
+  if (!res.ok) throw new Error(res.status);
+}
+
 async function pushToGist() {
   const token  = getToken();
   const gistId = getGistId();
   if (!token||!gistId) return;
-  updateSyncStatus('syncing');
+  updateSyncStatus("syncing");
   try {
-    const res = await fetch(`https://api.github.com/gists/${gistId}`, {
-      method: 'PATCH',
-      headers: { Authorization:`token ${token}`, 'Content-Type':'application/json' },
-      body: JSON.stringify({ files:{ [GIST_FILENAME]:{ content: JSON.stringify(loadEntries()) } } })
-    });
-    if (!res.ok) throw new Error(res.status);
-    updateSyncStatus('ok');
+    await pushToGistRaw(token, gistId, loadEntries());
+    updateSyncStatus("ok");
   } catch {
-    updateSyncStatus('err');
+    updateSyncStatus("err");
   }
 }
 
@@ -457,11 +461,14 @@ async function pullFromGist(silent=false) {
     const content = data.files?.[GIST_FILENAME]?.content;
     if (content) {
       const remote = JSON.parse(content);
-      // マージ：ローカルとリモートをidでマージ（重複排除）
+      // マージ：ローカルとリモートをidで重複排除して結合
       const local = loadEntries();
-      const merged = [...remote];
-      local.forEach(le => { if (!merged.find(re=>re.id===le.id)) merged.push(le); });
+      const map = {};
+      [...remote, ...local].forEach(e => { map[e.id] = e; });
+      const merged = Object.values(map).sort((a,b) => a.date.localeCompare(b.date));
       saveEntries(merged);
+      // マージ後すぐGistにも反映
+      await pushToGistRaw(getToken(), getGistId(), merged);
     }
     updateSyncStatus('ok');
     if (!silent) showToast('✓ 同期しました');
