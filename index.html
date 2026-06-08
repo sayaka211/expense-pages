@@ -70,6 +70,12 @@
   .entry-cat{background:var(--surface2);border-radius:4px;padding:1px 6px;font-size:11px;color:var(--accent2);border:1px solid var(--border);}
   .entry-delete{background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer;padding:0 0 0 4px;line-height:1;flex-shrink:0;}
   .entry-delete:active{color:var(--danger);}
+  .entry-edit{background:none;border:none;color:var(--text2);font-size:15px;cursor:pointer;padding:0 0 0 4px;line-height:1;flex-shrink:0;}
+  .entry-edit:active{color:var(--accent2);}
+  .btn-cancel{width:100%;background:none;border:1px solid var(--border);color:var(--text2);font-family:'Noto Sans JP',sans-serif;font-size:14px;padding:12px;border-radius:8px;cursor:pointer;margin-top:8px;transition:all .2s;}
+  .btn-cancel:active{border-color:var(--danger);color:var(--danger);}
+  .editing-banner{background:var(--surface2);border:1px solid var(--accent2);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--accent2);margin-bottom:12px;display:none;}
+  .editing-banner.show{display:block;}
   /* 出力 */
   .export-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px;}
   .export-title{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;}
@@ -109,6 +115,7 @@
 
 <!-- 入力タブ -->
 <div class="content" id="tab-input">
+  <div class="editing-banner" id="editingBanner">✏ 編集中 — 変更して「更新する」を押してください</div>
   <div class="form-card">
     <div class="form-row-2">
       <div>
@@ -151,7 +158,8 @@
       <div class="preset-chips" id="presetNoteChips"></div>
       <textarea class="form-textarea" id="inputNote" placeholder="または直接入力" oninput="renderPresetNoteChips()"></textarea>
     </div>
-    <button class="btn-add" onclick="addEntry()">追加する</button>
+    <button class="btn-add" id="btnAdd" onclick="addEntry()">追加する</button>
+    <button class="btn-cancel hidden" id="btnCancel" onclick="cancelEdit()">キャンセル</button>
   </div>
 </div>
 
@@ -222,6 +230,7 @@ function getGistId() { return localStorage.getItem(LS_GIST_ID)||''; }
 
 // ─── 初期化 ──────────────────────────────────────────────
 let selectedListMonth = 'all';
+let editingId = null;
 
 window.onload = async () => {
   const today = new Date();
@@ -319,24 +328,73 @@ async function addEntry() {
   if (!date||!amount||!summary) { showToast('日付・金額・摘要は必須です'); return; }
 
   const entries = loadEntries();
-  entries.push({
-    id: Date.now(), date, amount: parseInt(amount), summary,
-    category: document.getElementById('inputCategory').value||'未分類',
-    source:   document.getElementById('inputSource').value,
-    note:     document.getElementById('inputNote').value.trim(),
-    month:    date.slice(0,7)
-  });
-  saveEntries(entries);
+  if (editingId) {
+    const idx = entries.findIndex(e => e.id === editingId);
+    if (idx !== -1) {
+      entries[idx] = { ...entries[idx], date, amount: parseInt(amount), summary,
+        category: document.getElementById('inputCategory').value||'未分類',
+        source:   document.getElementById('inputSource').value,
+        note:     document.getElementById('inputNote').value.trim(),
+        month:    date.slice(0,7)
+      };
+    }
+    saveEntries(entries);
+    resetEditState();
+    showToast('✓ 更新しました');
+  } else {
+    entries.push({
+      id: Date.now(), date, amount: parseInt(amount), summary,
+      category: document.getElementById('inputCategory').value||'未分類',
+      source:   document.getElementById('inputSource').value,
+      note:     document.getElementById('inputNote').value.trim(),
+      month:    date.slice(0,7)
+    });
+    saveEntries(entries);
+    document.getElementById('inputAmount').value  = '';
+    document.getElementById('inputSummary').value = '';
+    document.getElementById('inputNote').value    = '';
+    document.getElementById('suggestChips').innerHTML = '';
+    renderPresetChips();
+    renderPresetNoteChips();
+    showToast('✓ 追加しました');
+  }
+  await pushToGist();
+}
 
+function editEntry(id) {
+  const e = loadEntries().find(entry => entry.id === id);
+  if (!e) return;
+  editingId = id;
+  document.getElementById('inputDate').value     = e.date;
+  document.getElementById('inputAmount').value   = e.amount;
+  document.getElementById('inputSummary').value  = e.summary;
+  document.getElementById('inputCategory').value = e.category;
+  document.getElementById('inputSource').value   = e.source;
+  document.getElementById('inputNote').value     = e.note || '';
+  document.getElementById('suggestChips').innerHTML = '';
+  renderPresetChips();
+  renderPresetNoteChips();
+  document.getElementById('btnAdd').textContent = '更新する';
+  document.getElementById('btnCancel').classList.remove('hidden');
+  document.getElementById('editingBanner').classList.add('show');
+  switchTab('input');
+}
+
+function cancelEdit() {
+  resetEditState();
+}
+
+function resetEditState() {
+  editingId = null;
   document.getElementById('inputAmount').value  = '';
   document.getElementById('inputSummary').value = '';
   document.getElementById('inputNote').value    = '';
   document.getElementById('suggestChips').innerHTML = '';
   renderPresetChips();
   renderPresetNoteChips();
-
-  showToast('✓ 追加しました');
-  await pushToGist();
+  document.getElementById('btnAdd').textContent = '追加する';
+  document.getElementById('btnCancel').classList.add('hidden');
+  document.getElementById('editingBanner').classList.remove('show');
 }
 
 // ─── 一覧 ────────────────────────────────────────────────
@@ -372,7 +430,10 @@ function renderList() {
           ${e.note?`<span>${e.note}</span>`:''}
         </div>
       </div>
-      <button class="entry-delete" onclick="deleteEntry(${e.id})">×</button>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <button class="entry-edit" onclick="editEntry(${e.id})">✏</button>
+        <button class="entry-delete" onclick="deleteEntry(${e.id})">×</button>
+      </div>
     </div>`).join('');
 }
 function filterMonth(m) { selectedListMonth=m; renderList(); }
